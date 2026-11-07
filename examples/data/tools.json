@@ -1,0 +1,10 @@
+{
+  "tools": [
+    {"name": "web_search", "cost": 0.02, "failure_rate": 0.15, "produces": ["results"]},
+    {"name": "fetch_page", "cost": 0.01, "failure_rate": 0.1, "produces": ["content"]},
+    {"name": "extract_facts", "cost": 0.05, "failure_rate": 0.0, "produces": ["facts"]},
+    {"name": "cross_check", "cost": 0.05, "failure_rate": 0.0, "produces": ["verified_facts"]},
+    {"name": "write_report", "cost": 0.1, "failure_rate": 0.0, "produces": ["report"]},
+    {"name": "send_email", "cost": 0.0, "failure_rate": 0.05, "produces": []}
+  ]
+}
