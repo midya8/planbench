@@ -1,0 +1,13 @@
+{
+  "name": "research-and-report",
+  "steps": [
+    {"id": "search-a", "tool": "web_search", "duration": 2.0, "max_retries": 2},
+    {"id": "search-b", "tool": "web_search", "duration": 2.5, "max_retries": 2},
+    {"id": "fetch-a", "tool": "fetch_page", "needs": ["search-a"], "requires": ["results"], "duration": 1.5, "max_retries": 1},
+    {"id": "fetch-b", "tool": "fetch_page", "needs": ["search-b"], "requires": ["results"], "duration": 1.5, "max_retries": 1},
+    {"id": "extract", "tool": "extract_facts", "needs": ["fetch-a", "fetch-b"], "requires": ["content"], "duration": 3.0},
+    {"id": "verify", "tool": "cross_check", "needs": ["extract"], "requires": ["facts"], "duration": 2.0},
+    {"id": "report", "tool": "write_report", "needs": ["verify"], "requires": ["verified_facts"], "duration": 4.0},
+    {"id": "notify", "tool": "send_email", "needs": ["report"], "duration": 0.5, "max_retries": 3}
+  ]
+}
