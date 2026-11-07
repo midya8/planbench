@@ -1,0 +1,9 @@
+{
+  "name": "broken",
+  "steps": [
+    {"id": "a", "tool": "web_search", "needs": ["b"]},
+    {"id": "b", "tool": "nonexistent_tool", "needs": ["a"]},
+    {"id": "b", "tool": "fetch_page", "requires": ["results"]},
+    {"id": "c", "tool": "extract_facts", "needs": ["ghost"]}
+  ]
+}
