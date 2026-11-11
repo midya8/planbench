@@ -5,7 +5,9 @@ from .validate import validate_plan, Finding
 from .simulate import simulate, SimulationResult
 from .metrics import critical_path, parallelism
 
-__version__ = "0.1.0"
+from .risk import analyze as analyze_risk
+
+__version__ = "0.2.0"
 
 __all__ = [
     "load_plan",
@@ -16,4 +18,5 @@ __all__ = [
     "SimulationResult",
     "critical_path",
     "parallelism",
+    "analyze_risk",
 ]
