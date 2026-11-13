@@ -1,9 +1,10 @@
-# The cheap run that failed
+# Exact retry-risk model
 
 PlanBench 0.2 adds a separate exact finite retry-risk API and browser inspector.
 The original seeded simulator, default CLI, loader, validator, metrics, reports,
-29 original tests and offline demo are retained unchanged. This is not a second
-plan project, a new probability algorithm or a production reliability predictor.
+29 original tests and offline demo are retained unchanged. The calculation
+enumerates a bounded probability model; it does not predict production
+reliability or change the original simulator.
 
 ## Exact model
 
@@ -144,7 +145,7 @@ estimator or globally optimized plan. Exponential enumeration is deliberate.
   substituted for bounded retry expectation.
 - [Geometric-distribution reference](https://en.wikipedia.org/wiki/Geometric_distribution):
   independent Bernoulli assumptions and trials-versus-failures conventions.
-- [Scheduling under Uncertainty: Bounding the Makespan Distribution](https://page.math.tu-berlin.de/~moehring/adm 3-scheduling/paperBoundsOnCmax.pdf):
+- [Scheduling under Uncertainty: Bounding the Makespan Distribution](https://page.math.tu-berlin.de/~moehring/adm3-scheduling/paperBoundsOnCmax.pdf):
   prior stochastic-project/DAG critical-path work and mean-of-maximum distinction.
   Our failure/skip extension and finite enumeration do not inherit a theorem or
   broad tractability guarantee from this survey.
