@@ -30,9 +30,15 @@ exports. Installed-wheel checks run outside the source checkout. Supplied ration
 assumptions are not production predictions, empirical confidence, resource-aware
 scheduling, correlated-outage modeling or a recommendation to retry real calls.
 
-## Why
+## Validation, simulation and exact risk
 
-Agent plans fail in boring ways that are cheap to catch before execution: a step calls a tool that does not exist, waits on an input nobody produces, or sits in a dependency cycle. And plans that look fine on paper miss their budgets once real tool latency, failures and retries are accounted for. PlanBench catches both:
+Validation checks the plan's structure and declared input production. Simulation
+uses one seeded sequence of failures with supplied durations, costs and retry
+limits. The separate exact-risk calculation enumerates all positive-probability
+histories within its bounds, including failed and skipped branches. None of
+these calculations calls real tools or learns their latency or reliability.
+
+The original simulator provides:
 
 - **semantic validation** - duplicate step ids, unknown tools, unknown or cyclic dependencies, and `requires` inputs no dependency's tool produces;
 - **deterministic parallel simulation** - steps start when their dependencies succeed; tool failures are drawn from a seeded RNG so the same plan, registry and seed always produce the same trace; retries and skip cascades are explicit in the report;
@@ -51,9 +57,9 @@ Plans are JSON: each step has an `id`, a `tool`, optional `needs` (dependency st
 
 ## Verification
 
-- 29 unit tests cover loader validation, every finding kind, topological ordering including cycles, sequential and parallel timing, seeded determinism, retry exhaustion and skip cascades, cost accumulation, critical path and parallelism, all three report formats, and the CLI end to end including both sides of every gate.
+- The 29 original unit tests cover loader validation, every finding kind, topological ordering including cycles, sequential and parallel timing, seeded determinism, retry exhaustion and skip cascades, cost accumulation, critical path and parallelism, all three report formats, and the CLI end to end including both sides of every gate.
 - `bash examples/demo.sh` runs fully offline: a research-agent plan with flaky tools simulates green (retries exercised, real concurrency asserted), a broken plan is rejected, and both gate sides are exercised.
-- CI runs the same suite across Python 3.10-3.13.
+- The current 39-test Python suite includes those originals and the exact-risk checks. Four Node/actual-Chrome tests exercise the independent browser. CI runs Python 3.10-3.13.
 
 Bounds worth stating: durations and failure rates are declared in the fixtures, not learned from real executions - the simulation measures what a plan would do under those assumptions, it does not predict real-world latency. Validation checks structure and producibility, not whether a tool call would actually succeed.
 
