@@ -5,13 +5,17 @@ from __future__ import annotations
 import argparse
 import sys
 
-from .loader import load_plan, load_tools
+from .loader import load_plan, load_tools, finite_number
 from .report import build_report, to_json, to_markdown, to_terminal
 from .simulate import simulate
 from .validate import validate_plan
 
 
 def _run(args: argparse.Namespace) -> tuple[dict, int]:
+    for name in ('max_findings', 'max_makespan', 'max_cost'):
+        value = getattr(args, name, None)
+        if value is not None and (not finite_number(value) or value < 0):
+            raise ValueError('--' + name.replace('_', '-') + ' must be finite and non-negative')
     plan = load_plan(args.plan)
     tools = load_tools(args.tools)
     findings = validate_plan(plan, tools)
@@ -65,7 +69,11 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument("--max-makespan", type=float, default=None)
             p.add_argument("--max-cost", type=float, default=None)
     args = parser.parse_args(argv)
-    _, code = _run(args)
+    try:
+        _, code = _run(args)
+    except (ValueError, OverflowError) as exc:
+        print('error: ' + str(exc), file=sys.stderr)
+        return 2
     return code
 
 
