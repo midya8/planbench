@@ -73,3 +73,24 @@ Bounds worth stating: durations and failure rates are declared in the fixtures, 
 ## License
 
 MIT
+
+## Refusing nonfinite simulator reports
+
+The original plan/tool loaders now reject NaN, infinity, Boolean numeric fields
+and numbers too large for their float representation. Durations must be finite
+and positive; costs finite and nonnegative; failure rates finite and in [0,1].
+Retry counts must be nonnegative integers, not Booleans.
+
+CLI cost/time/finding limits must be nonnegative and finite. Invalid limits are
+rejected before files are loaded or a report is written. If valid finite inputs
+still overflow a derived report value, the CLI exits 2 before writing its JSON
+or Markdown report. JSON serialization also refuses nonfinite numbers. The
+simulator API itself still expects validated inputs; this is not a resource cap
+or an arbitrary-precision simulator.
+
+Four new tests cover the loader and CLI refusals, finite-input aggregate
+overflow, strict JSON and both sides of finite policy gates. The suite now has
+45 Python tests, including all 41 earlier tests, and four Node/actual-Chrome
+tests. The four new tests also run against the isolated installed wheel. Exact
+retry-risk arithmetic and its bounded browser are unchanged. Supplied failures,
+durations and costs are still assumptions, not production predictions.
