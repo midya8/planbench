@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 
 from .metrics import critical_path, parallelism
 from .simulate import SimulationResult
@@ -33,11 +34,21 @@ def build_report(plan: dict, findings: list[Finding], result: SimulationResult |
                 for o in result.outcomes
             ],
         }
+    def check(value):
+        if isinstance(value, dict):
+            for item in value.values():
+                check(item)
+        elif isinstance(value, list):
+            for item in value:
+                check(item)
+        elif isinstance(value, float) and not math.isfinite(value):
+            raise ValueError('simulation report exceeds finite numerical range')
+    check(report)
     return report
 
 
 def to_json(report: dict) -> str:
-    return json.dumps(report, indent=2, sort_keys=True) + "\n"
+    return json.dumps(report, indent=2, sort_keys=True, allow_nan=False) + "\n"
 
 
 def to_markdown(report: dict) -> str:
