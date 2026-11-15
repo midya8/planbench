@@ -9,7 +9,7 @@ PlanBench checks agent plans - DAGs of tool calls - for structural and semantic 
 A cheap failed run is not a successful plan. The optional exact-risk API computes
 the whole joint success/time/cost law under supplied independent failures and
 bounded retries, including exhausted steps, skip cascades and unrelated branches.
-The original seeded simulator and CLI remain unchanged.
+The seeded simulator and CLI remain available alongside the exact-risk tools.
 
 [Interactive risk inspector](https://midya8.github.io/planbench/) |
 [Exact model, limits and sources](RISK.md)
@@ -24,7 +24,7 @@ events; native Python branches only on executed steps. All histories and exact
 fractions are inspectable and exportable. A supplied six-step bound and at most
 two retries keep enumeration deliberately small. No live tool calls occur.
 
-41 Python tests retain all 29 originals; four Node/actual-Chrome tests check 28
+45 Python tests retain all 29 originals; four Node/actual-Chrome tests check 28
 complete reports, 260 histories, 177 joint atoms, 24 responsive views and trusted
 exports. Installed-wheel checks run outside the source checkout. Supplied rational
 assumptions are not production predictions, empirical confidence, resource-aware
@@ -66,7 +66,7 @@ Plans are JSON: each step has an `id`, a `tool`, optional `needs` (dependency st
 
 - The 29 original unit tests cover loader validation, every finding kind, topological ordering including cycles, sequential and parallel timing, seeded determinism, retry exhaustion and skip cascades, cost accumulation, critical path and parallelism, all three report formats, and the CLI end to end including both sides of every gate.
 - `bash examples/demo.sh` runs fully offline: a research-agent plan with flaky tools simulates green (retries exercised, real concurrency asserted), a broken plan is rejected, and both gate sides are exercised.
-- The current 41-test Python suite includes those originals and the exact-risk checks. Four Node/actual-Chrome tests exercise the independent browser. CI runs Python 3.10-3.13.
+- The current 45-test Python suite includes those originals and the exact-risk checks. Four Node/actual-Chrome tests exercise the independent browser. CI runs Python 3.10-3.13.
 
 Bounds worth stating: durations and failure rates are declared in the fixtures, not learned from real executions - the simulation measures what a plan would do under those assumptions, it does not predict real-world latency. Validation checks structure and producibility, not whether a tool call would actually succeed.
 
