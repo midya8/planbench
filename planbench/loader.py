@@ -3,6 +3,15 @@
 from __future__ import annotations
 
 import json
+import math
+
+
+def finite_number(value):
+    """JSON numbers that can safely enter the simulator's binary64 arithmetic."""
+    try:
+        return type(value) in (int, float) and math.isfinite(value)
+    except OverflowError:
+        return False
 
 
 def _load_json(path: str, what: str) -> object:
@@ -31,10 +40,10 @@ def load_tools(path: str) -> dict[str, dict]:
         cost = spec.get("cost", 0.0)
         failure_rate = spec.get("failure_rate", 0.0)
         produces = spec.get("produces", [])
-        if not isinstance(cost, (int, float)) or cost < 0:
-            raise SystemExit(f"error: tool {name}: cost must be a non-negative number")
-        if not isinstance(failure_rate, (int, float)) or not 0 <= failure_rate <= 1:
-            raise SystemExit(f"error: tool {name}: failure_rate must be in [0, 1]")
+        if not finite_number(cost) or cost < 0:
+            raise SystemExit(f"error: tool {name}: cost must be a finite non-negative number")
+        if not finite_number(failure_rate) or not 0 <= failure_rate <= 1:
+            raise SystemExit(f"error: tool {name}: failure_rate must be finite and in [0, 1]")
         if not isinstance(produces, list) or not all(isinstance(p, str) for p in produces):
             raise SystemExit(f"error: tool {name}: produces must be a list of strings")
         registry[name] = {"cost": float(cost), "failure_rate": float(failure_rate), "produces": produces}
@@ -58,10 +67,10 @@ def load_plan(path: str) -> dict:
         if not isinstance(step.get("tool"), str):
             raise SystemExit(f"error: step {step.get('id')}: needs a string 'tool'")
         duration = step.get("duration", 1.0)
-        if not isinstance(duration, (int, float)) or duration <= 0:
-            raise SystemExit(f"error: step {step['id']}: duration must be a positive number")
+        if not finite_number(duration) or duration <= 0:
+            raise SystemExit(f"error: step {step['id']}: duration must be a finite positive number")
         retries = step.get("max_retries", 0)
-        if not isinstance(retries, int) or retries < 0:
+        if type(retries) is not int or retries < 0:
             raise SystemExit(f"error: step {step['id']}: max_retries must be a non-negative integer")
         needs = step.get("needs", [])
         if not isinstance(needs, list) or not all(isinstance(n, str) for n in needs):
