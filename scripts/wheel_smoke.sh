@@ -10,3 +10,5 @@ python -m venv "$OUT/env"
 "$OUT/env/bin/python" -m pip -q install "$OUT"/wheel/*.whl
 cd "$OUT"
 "$OUT/env/bin/python" "$ROOT/scripts/verify_installed.py" "$ROOT"
+cp "$ROOT/tests/test_finite_inputs.py" "$OUT/test_finite_inputs.py"
+"$OUT/env/bin/python" -B -m unittest discover -s "$OUT" -p test_finite_inputs.py -v
